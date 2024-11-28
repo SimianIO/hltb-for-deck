@@ -7,18 +7,22 @@ import contextMenuPatch, {
     LibraryContextMenu,
 } from './patches/LibraryContextMenu';
 import { LoadingScreen } from './components/LoadingScreen';
-import { fetchSearchKey } from './utils'; // Import fetchSearchKey
+import { fetchSearchKey } from './utils';
 
-export default definePlugin(async () => {
-    // Fetch the API key during initialization
+// Define the initializePlugin function
+async function initializePlugin() {
     const apiKey = await fetchSearchKey();
-    if (!apiKey) {
-        console.error('HLTB Plugin: Failed to fetch API key.');
+    if (apiKey) {
+        console.log('Successfully fetched API key:', apiKey);
+        // Store or pass the key if needed
     } else {
-        console.log('HLTB Plugin: API key fetched successfully:', apiKey);
-        // Optionally: Store the API key globally if needed
-        // Example: window.hltbApiKey = apiKey;
+        console.error('Failed to fetch HLTB API key.');
     }
+}
+
+// Main plugin definition
+export default definePlugin(async () => {
+    await initializePlugin(); // Call initializePlugin during setup
 
     const libraryContextMenuPatch = contextMenuPatch(LibraryContextMenu);
     const libraryAppPagePatch = patchAppPage();
